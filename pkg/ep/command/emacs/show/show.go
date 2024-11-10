@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-var format = regexp.MustCompile(`((?P<user>\w+)@)?(?P<host>.+)(:(?P<port>\d+))?`)
+var format = regexp.MustCompile(`((?P<user>\w+)@)?(?P<host>[^:]+)(:(?P<port>\d+))?`)
 
 func Build(
 	ctx context.Context,
