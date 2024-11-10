@@ -32,9 +32,11 @@
 (require 'auth-source)
 
 (condition-case err
-    (princ
-     (auth-info-password
-      (nth 0 (let* ((host "{{.Host}}")
+    (let ((password
+           (auth-info-password
+            (nth
+             0
+             (let* ((host "{{.Host}}")
                     (user "{{.User}}")
                     (port (string-to-number "{{.Port}}"))
                     (spec '()))
@@ -47,7 +49,9 @@
                (when (not (eq 0 port))
                  (push port spec)
                  (push :port spec))
-               (apply #'auth-source-search spec)))))
+               (apply #'auth-source-search spec))))))
+      (when password
+        (princ password)))
   (error
    (print err #'external-debugging-output)))
 
