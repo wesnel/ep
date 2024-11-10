@@ -32,24 +32,20 @@
 (require 'auth-source)
 
 (condition-case err
-    (let ((password
-           (auth-info-password
-            (nth
-             0
-             (let* ((host "{{.Host}}")
-                    (user "{{.User}}")
-                    (port (string-to-number "{{.Port}}"))
-                    (spec '()))
-               (when (not (eq "" host))
-                 (push host spec)
-                 (push :host spec))
-               (when (not (eq "" user))
-                 (push user spec)
-                 (push :user spec))
-               (when (not (eq 0 port))
-                 (push port spec)
-                 (push :port spec))
-               (apply #'auth-source-search spec))))))
+    (let* ((host "{{.Host}}")
+           (user "{{.User}}")
+           (port (string-to-number "{{.Port}}"))
+           (spec '())
+           (spec (if (not (eq host ""))
+                     (append '(:host host) spec)))
+           (spec (if (not (eq user ""))
+                     (append '(:user user) spec)))
+           (spec (if (not (eq port 0))
+                     (append '(:port port) spec)))
+           (password
+            (auth-info-password
+             (nth 0
+                  (apply #'auth-source-search spec)))))
       (when password
         (princ password)))
   (error
